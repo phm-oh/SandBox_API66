@@ -85,16 +85,56 @@ exports.deleteuserbyid = async (req, res, next) => {
     const user = await User.deleteOne({_id:id,});
 
     //ในกรณีที่หา id ไม่เจอ
-    if (!user) {
+    if (user.deletedCount === 0) {
       
-      throw new Error('ไม่พบรหัสผู้ใช้งานนี้');
+      throw new Error('ไม่สามารถลบข้อมูล');
+    } else{
+      res.status(200).json({
+        data: {
+          message:`ลบข้อมูลผู้ใช้ ${id} สำเร็จ` ,
+        },
+      });
     }
 
-    res.status(200).json({
-      data: {
-        message:`ลบข้อมูลผู้ใช้ ${id} สำเร็จ` ,
-      },
+  } catch (error) {
+    res.status(400).json({
+        error:{
+          message: 'เกิดข้อผิดพลาด' + error.message , 
+        }
     });
+
+    
+  }
+};
+
+
+
+exports.updateuserbyid = async (req, res, next) => {
+
+
+  try {
+    const { id } = req.params;
+    const { email, username, password } = req.body;
+    //กรณีนี้ต้องส่ง อินสแตนไปให้ครบ ไม่งั้นข้อมูลที่ไม่ส่งไปจะหายจาก db
+    // const user = await User.findById(id);
+    // user.email = email;
+    // user.username = username;
+    // user.password = password;
+    // await user.save();
+
+    const user = await User.findByIdAndUpdate(id,{
+      email:email,
+      username:username,
+      password:password
+    })
+
+      
+      res.status(200).json({
+        data: {
+          message:`แก้ไขข้อมูลผู้ใช้ ${id} สำเร็จ` ,
+        },
+      });
+    
 
   } catch (error) {
     res.status(400).json({

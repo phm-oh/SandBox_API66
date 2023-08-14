@@ -20,5 +20,9 @@ router.get('/:id', userController.userbyid);
 router.delete('/:id', userController.deleteuserbyid);
 
 
+// update user by id http://127.0.0.1:3000/users/id/
+router.put('/:id', userController.updateuserbyid);
+
+
 
 module.exports = router;
