@@ -82,7 +82,7 @@ exports.deleteuserbyid = async (req, res, next) => {
 
   try {
     const { id } = req.params;
-    const user = await User.deleteOne({_id:id,});
+    const user = await User.deleteOne({_id:id});
 
     //ในกรณีที่หา id ไม่เจอ
     if (user.deletedCount === 0) {
@@ -115,6 +115,7 @@ exports.updateuserbyid = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { email, username, password } = req.body;
+    //แบบืั้ 1
     //กรณีนี้ต้องส่ง อินสแตนไปให้ครบ ไม่งั้นข้อมูลที่ไม่ส่งไปจะหายจาก db
     // const user = await User.findById(id);
     // user.email = email;
@@ -122,20 +123,22 @@ exports.updateuserbyid = async (req, res, next) => {
     // user.password = password;
     // await user.save();
 
+
+    //แบบที่ 2
     const user = await User.findByIdAndUpdate(id,{
       email:email,
       username:username,
       password:password
     })
+    console.log(user);
 
-      
       res.status(200).json({
         data: {
           message:`แก้ไขข้อมูลผู้ใช้ ${id} สำเร็จ` ,
         },
       });
     
-
+    // catch เขียนเหมือนกันทั้ง 2 แบบ
   } catch (error) {
     res.status(400).json({
         error:{
