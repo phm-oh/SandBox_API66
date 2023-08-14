@@ -82,14 +82,12 @@ exports.deleteuserbyid = async (req, res, next) => {
 
   try {
     const { id } = req.params;
-    const user = await User.deleteOne({
-      _id:id,
-    });
+    const user = await User.deleteOne({_id:id,});
 
     //ในกรณีที่หา id ไม่เจอ
     if (!user) {
       
-      throw new Error('ไม่พบผู้ใช้งาน');
+      throw new Error('ไม่พบรหัสผู้ใช้งานนี้');
     }
 
     res.status(200).json({
