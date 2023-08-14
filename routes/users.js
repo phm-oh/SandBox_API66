@@ -10,7 +10,14 @@ router.get('/',userController.index );
 router.get('/login', userController.login);
 
 // http://127.0.0.1:3000/users/*/
-// router.post('/', userController.insert);
+router.post('/', userController.insert);
+
+// get by id http://127.0.0.1:3000/users/id/
+router.get('/:id', userController.userbyid);
+
+
+// delete user by id http://127.0.0.1:3000/users/id/
+router.delete('/:id', userController.deleteuserbyid);
 
 
 
