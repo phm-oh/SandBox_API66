@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
-import { ObjectId } from '../node_modules/bson/src/objectid';
-import { Schema } from '../node_modules/mongoose/types/index.d';
+// import { ObjectId } from '../node_modules/bson/src/objectid';
+// import { Schema } from '../node_modules/mongoose/types/index.d';
 // const { Schema } = mongoose.Schema;
 
 // const schema = new mongoose.Schema({
@@ -15,11 +15,11 @@ const schema =  Schema({
     menuphoto: { type:String , default:'nopic.png'},
     price:{ type: Number},
     shop:{ type: Schema.Types.ObjectId , ref: 'shops'} // สร้างคีย์รอง ไปเชื่อมกับโมเดลหลัก ? Model shops
-    }, 
+    }
     // ไม่ต้องทำ createdAt updatedAt -> mongoose ทำให้อัตโนมัติถ้าใส่ option timestamps: true
     // createdAt:{ type: Date, default: Date.now},
     // updatedAt:{ type: Date}
-  },{timestamps: true});
+  ,{timestamps: true});
 
 
 const menu = mongoose.model('menus',schema); // 'shops' => ให้ตั้งเหมือนชืื่อ document ใน db จะชัวสุด

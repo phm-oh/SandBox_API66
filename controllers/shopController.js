@@ -1,4 +1,5 @@
 const Shop = require('../models/shop');
+const Menu = require('../models/menu');
 
 // แบบเลือกทั้งหมด
 // exports.index = async (req, res, next) => {
@@ -162,10 +163,18 @@ exports.insertshop = async (req, res, next) => {
 
   //------get menu--------
 
-  exports.getmenu = async (req, res, next) => {
+exports.getmenu = async (req, res, next) => {
+  
+   const menu = await Menu.find();
+  //  const menu = await Menu.find().limit(3);  // จำกัด 3 รายการ
+  // const menu = await Menu.find().select('+menuname -price');
+  // const menu = await Menu.find().where({menuname:/Ovall/});
+  // https://mongoosejs.com/docs/queries.html  <--อ่านได้ที่
+  //  const menu = await Menu.find({ price: {$gt: 300}});
 
+  //const menu = await Menu.find().where('price').gt(100).lt(300) //  ราคา มากกว่า 100 ไม่เกิน 300
 
    res.status(200).json({
-     data: {},
+      data: menu
    })
  }  
