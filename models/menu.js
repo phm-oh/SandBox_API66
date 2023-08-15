@@ -9,6 +9,11 @@ const mongoose = require('mongoose');
 //   password: String, 
 // });
 
+const option = {
+    toJSON:{ virtuals: true},
+    timestamps: true 
+}
+
 const Schema =  mongoose.Schema;
 const schema =  Schema({
     menuname: { type:String , require:true , trim:true}, 
@@ -19,7 +24,14 @@ const schema =  Schema({
     // ไม่ต้องทำ createdAt updatedAt -> mongoose ทำให้อัตโนมัติถ้าใส่ option timestamps: true
     // createdAt:{ type: Date, default: Date.now},
     // updatedAt:{ type: Date}
-  ,{timestamps: true});
+  ,option );
+
+
+  // ทดลองสร้าง คอลัมจำลองขึ้นมา virtual type https://mongoosejs.com/docs/tutorials/virtuals.html
+  schema.virtual('price_vat').get(function() {
+    return this.price + (this.price * 0.07) ;
+    // return '45454';
+  });
 
 
 const menu = mongoose.model('menus',schema); // 'shops' => ให้ตั้งเหมือนชืื่อ document ใน db จะชัวสุด

@@ -173,6 +173,9 @@ exports.getmenu = async (req, res, next) => {
   //  const menu = await Menu.find({ price: {$gt: 300}});
 
   //const menu = await Menu.find().where('price').gt(100).lt(300) //  ราคา มากกว่า 100 ไม่เกิน 300
+  
+  // ทดลองสร้าง คอลัมจำลองขึ้นมา virtual type https://mongoosejs.com/docs/tutorials/virtuals.html
+  
 
    res.status(200).json({
       data: menu
