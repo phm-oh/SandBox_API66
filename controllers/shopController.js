@@ -1,15 +1,37 @@
 const Shop = require('../models/shop');
 
+// แบบเลือกทั้งหมด
+// exports.index = async (req, res, next) => {
 
+//      const shop = await Shop.find().sort({_id: -1})
+
+//     // res.send('respond with a resss');
+//     res.status(200).json({
+//       data:shop
+//     })
+//   }
+
+
+//แบบไม่เอา location
 exports.index = async (req, res, next) => {
 
-     const shop = await Shop.find().sort({_id: -1})
+    const shop = await Shop.find().select('name photo').sort({_id: -1})
 
-    // res.send('respond with a resss');
-    res.status(200).json({
-      data:shop
+    const shopWithPhotoDomain = await shop.map((s , index)=> { 
+      return {
+        id: s._id,
+        name: s.name,
+        photo: 'http://localhost:3000/images/'+s.photo,
+      }
     })
-  }
+
+   
+   res.status(200).json({
+     data: shopWithPhotoDomain,
+   })
+ }  
+
+  
 
 
 exports.shopbyid = async (req, res, next) => {
@@ -18,15 +40,22 @@ exports.shopbyid = async (req, res, next) => {
     try {
       const { id } = req.params;
       const shop= await Shop.findById(id);
+
+    
   
       //ในกรณีที่หา id ไม่เจอ
       if (!shop) {
         
         throw new Error('ไม่พบร้านค้า');
       }
+
+      shop['photo'] = 'http://localhost/image/' +shop.photo;
+      console.log(shop);
+
+      
   
       res.status(200).json({
-        data: shop,
+        data: shop
       });
   
     } catch (error) {
@@ -128,3 +157,15 @@ exports.insertshop = async (req, res, next) => {
       
     }
   };
+
+
+
+  //------get menu--------
+
+  exports.getmenu = async (req, res, next) => {
+
+
+   res.status(200).json({
+     data: {},
+   })
+ }  
