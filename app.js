@@ -23,7 +23,9 @@ mongoose.connect('mongodb+srv://oh:Oasis6566@learnapi01.skiyrau.mongodb.net/Sand
 
 
 app.use(logger('dev'));
-app.use(express.json());
+app.use(express.json({
+    limit : '50mb'      //กำหนดขนาดของ req.body ให้มีขนาดใหญ่ขึ้นป้องกันเวลาที่ส่งรูปภาพขนาดใหญ่เข้ามาที่ req.body 
+}));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));

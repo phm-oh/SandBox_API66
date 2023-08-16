@@ -1,3 +1,11 @@
+const fs = require('fs');
+const path = require('path');
+const uuidv4 = require('uuid'); //ต้องติดตั้ง uuid
+const { promisify } = require('util') 
+const writeFileAsync = promisify(fs.writeFile)
+
+
+
 const Shop = require('../models/shop');
 const Menu = require('../models/menu');
 
@@ -75,20 +83,20 @@ exports.shopbyid = async (req, res, next) => {
 
 
 exports.insertshop = async (req, res, next) => {
-    const { name, photo, location } = req.body;
+    const { name,location,photo } = req.body;
   
     // let user = new User(req.body);
   
     let shop = new Shop({
       name: name,
-      photo: photo,
       location: location,
+      photo: await saveImageToDisk(photo)
     });
   
     await shop.save();
   
     res.status(200).json({
-      message: "เพิ่มข้อมูลเรียบร้อย",
+      message: "เพิ่มข้อมูลร้านอาหารเรียบร้อย",
     });
   };  
 
@@ -127,6 +135,8 @@ exports.insertshop = async (req, res, next) => {
 
 
 
+
+
   exports.updateShopByid = async (req, res, next) => {
 
 
@@ -136,7 +146,8 @@ exports.insertshop = async (req, res, next) => {
 
       const shop = await Shop.findByIdAndUpdate(id,{
         name:name,
-        photo:photo,
+        photo:'nopic.png',
+        photo: await saveImageToDisk(photo),
         location:location
       })
       console.log(shop);
@@ -163,9 +174,9 @@ exports.insertshop = async (req, res, next) => {
 
   //------get menu--------
 
-exports.getmenu = async (req, res, next) => {
+exports.getmenuAll = async (req, res, next) => {
   
-   const menu = await Menu.find();
+  //  const menu = await Menu.find();
   //  const menu = await Menu.find().limit(3);  // จำกัด 3 รายการ
   // const menu = await Menu.find().select('+menuname -price');
   // const menu = await Menu.find().where({menuname:/Ovall/});
@@ -176,8 +187,75 @@ exports.getmenu = async (req, res, next) => {
   
   // ทดลองสร้าง คอลัมจำลองขึ้นมา virtual type https://mongoosejs.com/docs/tutorials/virtuals.html
   
+  //  res.status(200).json({
+  //     data: menu
+  //  })
 
-   res.status(200).json({
-      data: menu
-   })
+  // เริ่มจอยตาราง (populate)
+
+  //  const menu = await Menu.find().populate('shop');  // shop คือ ฟิลที่เป็น forent key ที่เชื่อมไปตาราง Shops
+  const menu = await Menu.find().populate('shop').sort({_id: -1}); //จัดเรียงเมนูล่าสุด
+  res.status(200).json({
+    data: menu
+  })
+
+
  }  
+
+
+//get shop whit menu by shop_id
+ exports.getShopWithMenu = async (req, res, next) => {
+  
+    const {id} = req.params;
+    const shop = await Shop.findById(id).populate('menusItem')
+   //จัดเรียงเมนูล่าสุด
+  res.status(200).json({
+    data: shop
+  })
+
+
+ } 
+
+
+
+//function save ภาพลงเครื่อง
+
+
+ async function saveImageToDisk(baseImage) {
+  //หา path จริงของโปรเจค
+  const projectPath = path.resolve('./') ;
+  //โฟลเดอร์และ path ของการอัปโหลด
+  const uploadPath = `${projectPath}/public/images/`;
+
+  //หานามสกุลไฟล์
+  const ext = baseImage.substring(baseImage.indexOf("/")+1, baseImage.indexOf(";base64"));
+
+  //สุ่มชื่อไฟล์ใหม่ พร้อมนามสกุล
+  let filename = '';
+  if (ext === 'svg+xml') {
+      filename = `${uuidv4.v4()}.svg`;
+  } else {
+      filename = `${uuidv4.v4()}.${ext}`;
+  }
+
+  //Extract base64 data ออกมา
+  let image = decodeBase64Image(baseImage);
+
+  //เขียนไฟล์ไปไว้ที่ path
+  await writeFileAsync(uploadPath+filename, image.data, 'base64');
+  //return ชื่อไฟล์ใหม่ออกไป
+  return filename;
+}
+
+function decodeBase64Image(base64Str) {
+  let matches = base64Str.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+  let image = {};
+  if (!matches || matches.length !== 3) {
+      throw new Error('Invalid base64 string');
+  }
+
+  image.type = matches[1];
+  image.data = matches[2];
+
+  return image;
+}
