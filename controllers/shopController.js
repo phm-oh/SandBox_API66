@@ -3,6 +3,7 @@ const path = require('path');
 const uuidv4 = require('uuid'); //ต้องติดตั้ง uuid
 const { promisify } = require('util') 
 const writeFileAsync = promisify(fs.writeFile)
+const config = require('../config/index');
 
 
 
@@ -30,7 +31,8 @@ exports.index = async (req, res, next) => {
       return {
         id: s._id,
         name: s.name,
-        photo: 'http://localhost:3000/images/'+s.photo,
+        // photo: 'http://localhost:3000/images/'+s.photo,
+        photo: config.DOMAIN +'/images/'+s.photo,
       }
     })
 

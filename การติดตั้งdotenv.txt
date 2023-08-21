@@ -1,0 +1,14 @@
+npm i dotenv
+
+
+สร้างไฟล .env
+กำหนดตัวแปลที่อยากตั้งค่า เช่น PORT = 4000
+
+สร้างโฟล์เดอร์ส่วนกลาง   config   สร้าง index.js ไว้หน้าใน
+ใน indec.js ทำการเรียกใช้ dotenv
+
+require('dotenv').config()
+module.exports = {
+    PORT: process.env.PORT,
+    
+}

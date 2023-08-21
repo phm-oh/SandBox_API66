@@ -4,16 +4,20 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
 
+// import middleware
+const errorHandle = require('./middleware/errorHandle');
 
+//require config
+const config = require('./config/index');
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const shopRouter = require('./routes/shop');
-
+const memberRouter = require('./routes/member');
 
 
 const app = express();
-mongoose.connect('mongodb+srv://oh:Oasis6566@learnapi01.skiyrau.mongodb.net/SandboxAPI66?retryWrites=true&w=majority',{
+mongoose.connect(config.MONGODB_URI,{
     useNewUrlParser:true,
     useUnifiedTopology:true,
 });
@@ -31,7 +35,11 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/user', usersRouter);
 app.use('/shop',shopRouter);
+app.use('/member', memberRouter);
 
+
+
+app.use(errorHandle);     //ข้อกำหนดจะต้องใส่ errorHandle ไว้ล่างสุดก่อน exports
 module.exports = app;
