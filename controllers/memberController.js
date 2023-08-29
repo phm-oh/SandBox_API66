@@ -1,5 +1,7 @@
 const member = require("../models/members");
 const Member = require("../models/members");
+const { validationResult} = require('express-validator');
+
 
 
 // exports.index = (req, res, next) => {
@@ -9,7 +11,7 @@ const Member = require("../models/members");
 //     })
 //   }
 
-exports.letmein = async(req, res, next) => {
+exports.index = async(req, res, next) => {
 
     const member = await Member.find();
 
@@ -24,7 +26,19 @@ exports.register = async (req, res, next) => {
      try {
         const {name,email,password} = req.body;
 
-        //checkemail ซ้ำ
+        //validation  เช็คก่อนจะส่งไป db
+        const errors = validationResult(req);
+        if (!errors.isEmpty()){
+          // return res.status(422).json({errors: errors.array()});
+          const error = new Error('ข้อมูลไม่ถูกต้อง');
+          error.statusCode = 422;
+          error.validation = errors.array();
+          throw error;
+
+        }
+
+
+        //checkemail ซ้ำ เช็คหลังจากส่งไป db
         //ไปสร้าง midleware error ก่อน
         const existEmail = await Member.findOne({email:email});
         if(existEmail){
@@ -52,3 +66,52 @@ exports.register = async (req, res, next) => {
 
 
   };
+
+
+
+
+
+ exports.login = async (req,res,next) =>{
+      
+  try {
+    const {email,password} = req.body;
+
+    //  console.log(password)
+
+
+    //checkemail ซ้ำ เช็คหลังจากส่งไป db
+    //ไปสร้าง midleware error ก่อน
+    const member = await Member.findOne({email:email});
+    if(!member){
+       const error = new Error('ไม่พบผู้ใช้งานนี้');
+       error.statusCode = 400;
+       throw error;
+    }
+    // console.log(member.email)
+    // console.log(member.password)
+    // console.log(password)
+   
+     //ตรวจสอบว่า password ตรงกันไหม
+
+     const isValidPassword = await member.checkPassword(password);
+     console.log(isValidPassword);
+   
+    
+    if(!isValidPassword){
+       const error = new Error('รหัสผ่านไม่ถูกต้อง');
+       error.statusCode = 401;
+       throw error;
+      
+    }
+
+    res.status(200).json({
+      message: "Login success ",
+    });
+    
+ } catch (error) {
+    next(error);
+ }
+    
+
+
+ }

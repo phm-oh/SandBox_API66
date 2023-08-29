@@ -17,9 +17,22 @@ schema.methods.newPassword = async (passwod)=>{           //newPassword คื�
    return newpass;
 }  
 
-schema.method.compare = async(newpassword)=>{
-  
-}
+// schema.methods.checkPassword = async(password)=>{
+//   const isValid = await bcrypt.compare(password, this.password)
+//   console.log(isValid)
+//   return isValid;  // ถเา password5^d `isVlid จะเป็น true  ถ้าไม่ตรงจะเป็น false
+// }
+
+schema.methods.checkPassword = async function(password) {
+  try {
+    // console.log(password)
+    // console.log(this.password)
+    const isValid = await bcrypt.compare(password, this.password);
+    return isValid;
+  } catch (error) {
+    throw error;
+  }
+};
 
 
 const member = mongoose.model('members',schema); // 'users' => ให้ตั้งเหมือนชืื่อ document ใน db จะชัวสุด
