@@ -1,6 +1,10 @@
-const member = require("../models/members");
+// const member = require("../models/members");
 const Member = require("../models/members");
 const { validationResult} = require('express-validator');
+var jwt = require('jsonwebtoken');
+const config = require('../config/index');
+require('dotenv').config();
+
 
 
 
@@ -104,8 +108,21 @@ exports.register = async (req, res, next) => {
       
     }
 
-    res.status(200).json({
-      message: "Login success ",
+    //สร้าง token
+    const token = await jwt.sign({
+      id: member.id,
+      role: member.role
+    }, config.JWT_SECRET,{expiresIn:'5 day'});   //ไป gen password ที่ https://www.grc.com/passwords.htm
+
+    //decode วันหมดอายุ
+    const expire_in = jwt.decode(token)
+
+    return res.status(200).json({
+      // message: "Login success ",
+      access_token: token,
+      expire_in: expire_in.exp,
+      token_type: 'Bearer'
+
     });
     
  } catch (error) {
@@ -115,3 +132,19 @@ exports.register = async (req, res, next) => {
 
 
  }
+
+
+ exports.getprofile = (req, res, next) => {
+  console.log(req)
+const {name,email,role} = req.member;
+console.log(req.member)
+
+    return res.status(200).json({
+      member: {
+        // id:_id,
+        name:name,
+        email:email,
+        role:role
+      }
+   });
+};

@@ -3,12 +3,16 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
+const passport = require('passport');
+
 
 // import middleware
 const errorHandle = require('./middleware/errorHandle');
 
 //require config
 const config = require('./config/index');
+
+
 
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
@@ -33,6 +37,9 @@ app.use(express.json({
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// init passort
+app.use(passport.initialize());
 
 app.use('/', indexRouter);
 app.use('/user', usersRouter);
