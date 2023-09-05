@@ -136,12 +136,12 @@ exports.register = async (req, res, next) => {
 
  exports.getprofile = (req, res, next) => {
   console.log(req)
-const {name,email,role} = req.member;
+const {_id,name,email,role} = req.member;
 console.log(req.member)
 
     return res.status(200).json({
       member: {
-        // id:_id,
+        id:_id,
         name:name,
         email:email,
         role:role
