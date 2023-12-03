@@ -12,3 +12,16 @@ module.exports = {
     PORT: process.env.PORT,
     
 }
+
+// ส่วน connection
+
+//mongoose.connect('mongodb+srv://udvc66:Udvc1234@learnapi01.skiyrau.mongodb.net/?retryWrites=true&w=majority',{
+    dbName: 'portee66',
+}).then(
+    ()=>{
+        console.log('connected at port:3000');
+        console.log('crt+c for cancle server');
+    } , err => { 
+        console.log("connect wrong")
+    }
+);
