@@ -15,7 +15,7 @@ module.exports = {
 
 // ส่วน connection
 
-//mongoose.connect('mongodb+srv://udvc66:Udvc1234@learnapi01.skiyrau.mongodb.net/?retryWrites=true&w=majority',{
+//mongoose.connect('mongodb+srv://<username>:<password>@learnapi01.skiyrau.mongodb.net/?retryWrites=true&w=majority',{
     dbName: 'portee66',
 }).then(
     ()=>{
